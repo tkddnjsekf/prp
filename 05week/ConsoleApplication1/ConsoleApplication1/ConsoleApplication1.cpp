@@ -26,6 +26,19 @@ int title_screen()
 
     return 0;
 }
+
+void gotaxy(int x, int y) // 맵 이걸로 찍음 = 과제
+{
+    COORD pos = { x, y };
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+
+}
+//gamestate == 1번
+int play_screen(int stage_width, int stage_height)
+//width height 입력받으면 그거만큼 별 찍어서 맵 만들기
+{
+
+}
 //gamestate == 2번
 int Tip_text() 
 {
@@ -41,7 +54,6 @@ int Tip_text()
 
 int main()
 {
-
     int gamestate = 0;
     int is_game_play = 1;
     title_screen();
