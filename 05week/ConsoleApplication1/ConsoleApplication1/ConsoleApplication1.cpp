@@ -1,110 +1,149 @@
-﻿#ifndef DEBUG
-#endif // !DEBUG
+﻿//#define DEBUG
 #include <iostream>
 #include <conio.h>
 #include <Windows.h>
 
-//gamestate == 0번
-int title_screen()
+// game_state == 0 일때
+
+
+const int max_map = 100;
+int print_title_screen()
 {
-    std::cout << "*******************************" ;
-    std::cout << "*                             *" << std::endl;
-    std::cout << "*                             *" << std::endl;
-    std::cout << "*           지렁이 게임       *" << std::endl;
-    std::cout << "*          (Snake bite)       *" << std::endl;
-#ifndef DEBUG //디버그모드 띄울려면  1,2번도 해야함 (컴파일 옵션)
-    std::cout << "*        - 디버그 모드 -      *" << std::endl;
-#else //이거 하면 줄 안띠움
-#endif // !DEBUGstd::cout << "*                             *" << std::endl;
-    std::cout << "*        1.  게임 시작        *" << std::endl;
-    std::cout << "*        2.  게임 설명        *" << std::endl;
-    std::cout << "*        3.  게임 랭킹        *" << std::endl;
-    std::cout << "*        4.  게임 종료 (esc)  *" << std::endl;
-    std::cout << "*                             *" << std::endl;
-    std::cout << "*                             *" << std::endl;
-    std::cout << "*******************************" << std::endl;
+    std::cout << "******************************************" << std::endl;
+    std::cout << "*                                        *" << std::endl;
+    std::cout << "*                                        *" << std::endl;
+    std::cout << "*              지렁이 게임               *" << std::endl;
+    std::cout << "*             (Snake  Bite)              *" << std::endl;
+
+#ifdef DEBUG
+    std::cout << "*            - 디버그 모드 -             *" << std::endl;
+#else
+    std::cout << "*                                        *" << std::endl;
+#endif  
+    std::cout << "*   1. 게임 시작                         *" << std::endl;
+    std::cout << "*   2. 게임 설명                         *" << std::endl;
+    std::cout << "*   3. 게임 랭킹 보기                    *" << std::endl;
+    std::cout << "*   4. 게임 종료 (esc)                   *" << std::endl;
+    std::cout << "******************************************" << std::endl;
 
     return 0;
 }
 
-void gotaxy(int x, int y) // 맵 이걸로 찍음 = 과제
-{
-    COORD pos = { x, y };
+void gotoxy(int x, int y) {
+    //x, y 좌표 설정
+    COORD pos = { x,y };
+    //커서 이동
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-
 }
-//gamestate == 1번
-int play_screen(int stage_width, int stage_height)
-//width height 입력받으면 그거만큼 별 찍어서 맵 만들기
+
+
+    int print_game_screen(int stage_width, int stage_height)
+    {
+        // 이차원 맵 생성
+        char map[max_map][max_map] = {};
+
+        // 맵에 테두리 그리기
+        for (int i = 0; i < stage_width + 2; i++) {
+            map[0][i] = '#';
+            map[stage_height + 1][i] = '#';
+        }
+        for (int i = 0; i < stage_height + 2; i++) {
+            map[i][0] = '#';
+            map[i][stage_width + 1] = '#';
+        }
+
+        // 맵 출력
+        for (int i = 0; i < stage_height + 2; i++) {
+            for (int j = 0; j < stage_width + 2; j++) {
+                if (map[i][j] == '#') {
+                    std::cout << "#";
+                }
+                else {
+                    std::cout << " ";
+                }
+            }
+            std::cout << std::endl;
+        }
+
+        return 0;
+    }
+
+
+
+// game_state == 2 일때
+int print_introduction_screen()
 {
-
-}
-//gamestate == 2번
-int Tip_text() 
-{
-
-    std::cout << "*********************************************" << std::endl;
-    std::cout << "*  타이틀 화면으로 돌아가시겠습니까? (Y/N)  *" << std::endl;
-    std::cout << "*              Y = 1번 / N = 2번            *" << std::endl;
-    std::cout << "*********************************************" << std::endl;
-
+    std::cout << "******************************************" << std::endl;
+    std::cout << "타이틀화면으로 돌아갈까요? (Y/N)" << std::endl;
     return 0;
 }
-
 
 int main()
 {
-    int gamestate = 0;
-    int is_game_play = 1;
-    title_screen();
+  
 
-    char c = _getch();
+    int game_state = 0;
+    int is_game_running = 1;
 
-    while (1)
+    while (is_game_running)
     {
         char key_input = '0';
-        switch (gamestate)
+        switch (game_state)
         {
         case 0:
-            title_screen();
+            print_title_screen();
             key_input = _getch();
             switch (key_input)
             {
             case '1':
+                game_state = 1;
                 break;
             case '2':
-                gamestate = 2;
+                game_state = 2;
                 break;
             case '3':
                 break;
             case '4':
-                is_game_play = 0;
+                is_game_running = 0;
+                break;
             case 27:
-                is_game_play = 0;
+                is_game_running = 0;
                 break;
             default:
                 break;
             }
             break;
-        case 2:
+        case 1:
+            int stage_width, stage_height;
+            std::cout << "맵 가로 크기를 입력하세요: ";
+            std::cin >> stage_width;
+            std::cout << "맵 세로 크기를 입력하세요: ";
+            std::cin >> stage_height;
+            print_game_screen(stage_width, stage_height);
+            key_input = _getch();
+            break;
 
-            Tip_text();
+        case 2:
+            print_introduction_screen();
             key_input = _getch();
             switch (key_input)
             {
             case 'y':
-                gamestate = 0;
+                game_state = 0;
                 break;
             case 'n':
                 break;
             default:
                 break;
-
             }
+            break;
+
+        default:
             break;
         }
 
-        return 0;
 
     }
+
+    return 0;
 }
